@@ -1,0 +1,12 @@
+{
+  "name": "frontend2js",
+  "version": "0.1.0",
+  "description": "Transforms a web project into js to do further analysis",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "bernardoadc",
+  "license": "ISC",
+  "dependencies": {
+  }
+}
