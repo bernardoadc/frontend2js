@@ -3,22 +3,20 @@
   "version": "0.1.0",
   "description": "Transforms a web project into js to do further analysis",
   "main": "index.js",
+  "type": "module",
   "bin": {
     "package": "./index.js"
   },
   "scripts": {
     "start": "node index.js",
     "lint": "eslint --fix -f compact --ignore-path .gitignore .",
-    "test": "c8 ava",
+    "test": "npm start ./tests/fake-proj-test",
+    "test:coverage": "c8 ava",
     "test:watch": "ava --watch"
   },
   "keywords": [],
   "author": "bernardoadc",
   "license": "ISC",
-  "dependencies": {
-    "ast-traverse": "^0.1.1",
-    "esprima": "^4.0.1"
-  },
   "devDependencies": {
     "ava": "^4.3.3",
     "c8": "^7.12.0",
@@ -29,5 +27,9 @@
     "eslint-plugin-n": "^15.3.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.1"
+  },
+  "dependencies": {
+    "glob": "^8.0.3",
+    "node-html-parser": "^6.1.1"
   }
 }
