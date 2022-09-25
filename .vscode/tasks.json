@@ -1,0 +1,8 @@
+{
+  "label": "lintar projeto",
+  "type": "npm",
+  "script": "lint",
+  "problemMatcher": [
+    "$eslint-compact"
+  ]
+}
