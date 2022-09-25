@@ -4,7 +4,7 @@ module.exports = {
     es6: true
   },
   extends: [
-    '@z3k/eslint-config-zk',
+    'standard',
     'plugin:ava/recommended'
   ],
   plugins: [
@@ -15,7 +15,7 @@ module.exports = {
     SharedArrayBuffer: 'readonly'
   },
   parserOptions: {
-    ecmaVersion: 2018
+    ecmaVersion: 2020
   },
   rules: {
     'ava/no-skip-test': ['warn']
