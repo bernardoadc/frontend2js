@@ -8,5 +8,7 @@
   "author": "bernardoadc",
   "license": "ISC",
   "dependencies": {
+    "ast-traverse": "^0.1.1",
+    "esprima": "^4.0.1"
   }
 }

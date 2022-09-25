@@ -1,0 +1,21 @@
+lockfileVersion: 5.4
+
+specifiers:
+  ast-traverse: ^0.1.1
+  esprima: ^4.0.1
+
+dependencies:
+  ast-traverse: 0.1.1
+  esprima: 4.0.1
+
+packages:
+
+  /ast-traverse/0.1.1:
+    resolution: {integrity: sha512-CPuE4BWIhJjsNMvFkrzjiBgOl56NJTuBPBkBqyRyfq/nZtx1Z1f5I+qx7G/Zt+FAOS+ABhghkEuWJrfW9Njjog==}
+    dev: false
+
+  /esprima/4.0.1:
+    resolution: {integrity: sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==}
+    engines: {node: '>=4'}
+    hasBin: true
+    dev: false
