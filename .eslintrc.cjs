@@ -19,5 +19,8 @@ module.exports = {
   },
   rules: {
     'ava/no-skip-test': ['warn']
-  }
+  },
+  ignorePatterns: [
+    '/tests/fake-proj-test/**/*'
+  ]
 }

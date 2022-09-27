@@ -1,6 +1,6 @@
 {
   "name": "frontend2js",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Transforms a web project into js to do further analysis",
   "main": "index.js",
   "type": "module",
@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node index.js",
     "lint": "eslint --fix -f compact --ignore-path .gitignore .",
-    "test": "npm start ./tests/fake-proj-test",
+    "test": "ava",
     "test:coverage": "c8 ava",
     "test:watch": "ava --watch"
   },
@@ -32,5 +32,10 @@
     "glob": "^8.0.3",
     "node-html-parser": "^6.1.1",
     "sander": "^0.6.0"
+  },
+  "ava": {
+    "files": [
+      "tests/**/*.test.js"
+    ]
   }
 }
