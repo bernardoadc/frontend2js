@@ -1,5 +1,5 @@
 #! /usr/bin/env node
-import { readFileSync, statSync, unlinkSync, appendFileSync } from 'sander'
+import { existsSync, statSync, rimrafSync, copyFileSync, readFileSync, unlinkSync, appendFileSync } from 'sander'
 import glob from 'glob'
 import { parse } from 'node-html-parser'
 import { resolve } from 'path'
@@ -7,27 +7,27 @@ import { resolve } from 'path'
 let files
 
 export default start
-export async function start (inputFolder, finish) {
+export async function start (inputFolder, destFolder, finish) {
   inputFolder = resolve(inputFolder)
+  destFolder = resolve(destFolder)
+  if (!existsSync(inputFolder)) throw new Error('input does not exist')
   if (!statSync(inputFolder).isDirectory()) throw new Error('input is not a folder')
+  if (existsSync(destFolder) && !statSync(destFolder).isDirectory()) throw new Error('destination is not a folder')
 
-  files = await glob.sync(inputFolder + '/**/*.htm?(l)', { nodir: true })
+  // copy only files with allowed extensions
+  await rimrafSync(destFolder)
+  const extensions = '.?(htm?(l))?(?(c|m)js?(x))' // htm, html, js, cjs, mjs, jsx
+  const toCopy = await glob.sync(inputFolder + '/**/*' + extensions)
+  for (const file of toCopy) {
+    const dest = file.replace(inputFolder, destFolder)
+    await copyFileSync(file).to(dest)
+  }
+
+  // gets definitive file list
+  files = await glob.sync(destFolder + '/**/*' + '.htm?(l)', { nodir: true })
 
   await script2import()
-  await clearOtherFiles(inputFolder)
   if (finish) await done()
-}
-
-async function clearOtherFiles (inputFolder) {
-  const list = await glob.sync(inputFolder + '/**/*', {
-    nodir: true,
-    ignore: [
-      inputFolder + '/**/*.htm?(l)',
-      inputFolder + '/**/*.js'
-    ]
-  })
-
-  if (list) list.forEach(async file => await unlinkSync(file))
 }
 
 export async function process (selector, cb) {

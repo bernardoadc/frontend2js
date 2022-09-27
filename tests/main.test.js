@@ -7,15 +7,10 @@ import { default as f2js, start, process, done } from '../pkg/api.js'
 const fakeProj = './tests/fake-proj'
 const fakeProjTest = fakeProj + '-test'
 
-test.before('prepare folder', async function (t) {
-  await rimrafSync(fakeProjTest)
-  await copydirSync(fakeProj).to(fakeProjTest)
-})
-
 test.serial('cli', async function (t) {
   await new Promise(function (resolve, reject) {
-    exec(`npm start ${fakeProjTest}`, function (error, stdout, stderr) {
-      if (error) t.fail(error)
+    exec(`npm start "${fakeProj}" "${fakeProjTest}"`, function (error, stdout, stderr) {
+      if (error) t.fail(error.message)
       if (stderr) t.fail(stderr)
       if (stdout) resolve(stdout)
     })
@@ -24,16 +19,13 @@ test.serial('cli', async function (t) {
   t.truthy(await existsSync(fakeProjTest + '/index.html.js'))
 })
 
-test.serial('delete non-js files', async function (t) {
+test.serial('dont copy non-js files', async function (t) {
   t.falsy(await existsSync(fakeProjTest + '/index.html'))
   t.falsy(await existsSync(fakeProjTest + '/index.css'))
 })
 
 test.serial('imports', async function (t) {
-  await rimrafSync(fakeProjTest)
-  await copydirSync(fakeProj).to(fakeProjTest)
-
-  await f2js(fakeProjTest, true)
+  await f2js(fakeProj, fakeProjTest, true)
 
   const output = await readFileSync(fakeProjTest + '/index.html.js').toString()
 
