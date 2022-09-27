@@ -1,35 +1,47 @@
 #! /usr/bin/env node
-import { readFile, statSync, unlink, appendFile } from 'fs'
+import { readFileSync, statSync, unlinkSync, appendFileSync } from 'sander'
 import glob from 'glob'
 import { parse } from 'node-html-parser'
 import { resolve } from 'path'
 
 let files
 
-function clearOtherFiles (inputFolder) {
-  glob(inputFolder + '/**/*', {
+export default start
+export async function start (inputFolder, finish) {
+  inputFolder = resolve(inputFolder)
+  if (!statSync(inputFolder).isDirectory()) throw new Error('input is not a folder')
+
+  files = await glob.sync(inputFolder + '/**/*.htm?(l)', { nodir: true })
+
+  await script2import()
+  await clearOtherFiles(inputFolder)
+  if (finish) await done()
+}
+
+async function clearOtherFiles (inputFolder) {
+  const list = await glob.sync(inputFolder + '/**/*', {
     nodir: true,
     ignore: [
       inputFolder + '/**/*.htm?(l)',
       inputFolder + '/**/*.js'
     ]
-  }, (err, files) => !err && files && files.forEach(async file => unlink(file, () => {})))
+  })
+
+  if (list) list.forEach(async file => await unlinkSync(file))
 }
 
-function process (selector, cb) {
+export async function process (selector, cb) {
   for (const file of files) {
-    readFile(file, function (err, data) {
-      if (err) throw err
+    const data = await readFileSync(file)
+    const root = parse(data)
+    const scope = root.querySelectorAll(selector)
+    if (!scope) return
 
-      const root = parse(data)
-      const scope = root.querySelectorAll(selector)
-      if (!scope) return
+    for (const el of scope) {
 
-      const content = cb(scope)
-
-      appendFile(file + '.js', content, { encoding: 'utf8' }, () => {})
-    })
-  }
+      const content = cb(el) + '\n'
+      await appendFileSync(file + '.js', content, { encoding: 'utf8' })
+    }
 }
 
 function script2import () {
@@ -45,23 +57,8 @@ function script2import () {
   })
 }
 
-function done () {
+export async function done () {
   for (const file of files) {
-    unlink(file, () => {})
+    await unlinkSync(file)
   }
-}
-
-export default function frontend2js (inputFolder, finish) {
-  inputFolder = resolve(inputFolder)
-
-  if (!statSync(inputFolder).isDirectory()) throw new Error('input is not a folder')
-
-  glob(inputFolder + '/**/*.htm?(l)', { nodir: true }, function (err, list) {
-    if (err) throw err
-    files = list
-
-    script2import()
-    clearOtherFiles(inputFolder)
-    if (finish) done()
-  })
 }
