@@ -38,23 +38,21 @@ export async function process (selector, cb) {
     if (!scope) return
 
     for (const el of scope) {
+      el.attrsObj = el.rawAttrs.split(' ').reduce((o, rattr) => { // corrects node-html-parser bug
+        const [name, value] = rattr.split('=')
+        o[name] = value ? value.slice(1, -1) : true
+        return o
+      }, {})
 
       const content = cb(el) + '\n'
       await appendFileSync(file + '.js', content, { encoding: 'utf8' })
     }
+  }
 }
 
-function script2import () {
-  process('script', function (scripts) {
-    let content = ''
-
-    for (const script of scripts) {
-      const src = script.rawAttrs.replace('src=', '').replaceAll('"', '') // script.getAttribute('src')
-      content += `import '${src}'\n`
-    }
-
-    return content
-  })
+async function script2import () {
+  await process('script[src]', script => `import '${script.attrsObj.src}'`)
+  await process('script:not([src])', script => script.textContent)
 }
 
 export async function done () {
