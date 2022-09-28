@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "bin": {
-    "package": "./index.js"
+    "frontend2js": "./index.js"
   },
   "scripts": {
     "start": "node index.js",
